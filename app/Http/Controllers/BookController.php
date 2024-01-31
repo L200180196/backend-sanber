@@ -9,11 +9,42 @@ use Illuminate\Support\Facades\Validator;
 
 class BookController extends Controller
 {
-    public function getAll() {
-        $books = Book::all();
+    public function getAll(Request $request) {
+        $books = Book::query();
+
+        $title = $request->query('title');
+        $books->when($title, function($query) use ($title) {
+            return $query->whereRaw("title LIKE '%".strtolower($title)."%'");
+        });
+
+        $sortByTitle = $request->query('sortByTitle');
+        $books->when($sortByTitle, function($query) use ($sortByTitle) {
+            return $query->orderBy('title', $sortByTitle);
+        });
+
+        $minYear = $request->query('minYear');
+        $books->when($minYear, function($query) use ($minYear) {
+            return $query->whereRaw('release_year >= '. $minYear);
+        });
+        
+        $maxYear = $request->query('maxYear');
+        $books->when($maxYear, function($query) use ($maxYear) {
+            return $query->whereRaw('release_year <= '. $maxYear);
+        });
+
+        $minPage = $request->query('minPage');
+        $books->when($minPage, function($query) use ($minPage) {
+            return $query->whereRaw('total_page >= '. $minPage);
+        });
+
+        $maxPage = $request->query('maxPage');
+        $books->when($maxPage, function($query) use ($maxPage) {
+            return $query->whereRaw('total_page <= '. $maxPage);
+        });
+        
         return response()->json([
             'status' => 'Success',
-            'data' => $books
+            'data' => $books->get()
         ]);
     }
 
