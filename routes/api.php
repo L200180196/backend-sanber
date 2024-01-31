@@ -21,6 +21,10 @@ Route::get('categories', [CategoryController::class, 'getAll']);
 Route::post('categories', [CategoryController::class, 'create']);
 Route::patch('categories/{id}', [CategoryController::class, 'update']);
 Route::delete('categories/{id}', [CategoryController::class, 'destroy']);
+Route::get('categories/{id}/books', [CategoryController::class, 'getBook']);
 
 // Book Route
 Route::get('books', [BookController::class, 'getAll']);
+Route::post('books', [BookController::class, 'create']);
+Route::patch('books/{id}', [BookController::class, 'update']);
+Route::delete('books/{id}', [BookController::class, 'destroy']);

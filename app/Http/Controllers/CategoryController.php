@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Book;
 
 class CategoryController extends Controller
 {
@@ -13,6 +14,22 @@ class CategoryController extends Controller
         return response()->json([
             'status' => 'Success',
             'data' => $categories
+        ]);
+    }
+
+    public function getBook($id) {
+        // Check Category
+        $category = Category::find($id);
+        if(!$category) {
+            return response()->json([
+                'status' => "Error 404",
+                'message' => 'Category not Found'
+            ], 404);
+        }
+        $book = Book::where('category_id', '=' ,$id)->get();
+        return response()->json([
+            'status' => 'Success',
+            'data' => $book
         ]);
     }
 
